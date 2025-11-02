@@ -27,7 +27,7 @@ class OpenAILikeClient(LLMClient):
         }
 
         try:
-            response = requests.post(self.endpoint, json=payload, headers=headers, timeout=30)
+            response = requests.post(self.endpoint, json=payload, headers=headers, timeout=120)
             response.raise_for_status()
             data = response.json()
 

@@ -1,0 +1,17 @@
+[theme]
+base="light"
+primaryColor="#0055FF"
+backgroundColor="#FFFFFF"
+secondaryBackgroundColor="#F5F5F5"
+textColor="#111111"
+font="sans serif"
+
+[theme.sidebar]
+backgroundColor="#F5F5F5"
+textColor="#111111"
+
+# Additional styling for minimal design
+linkColor="#0055FF"
+buttonRadius=4
+baseRadius=4
+borderColor="#E0E0E0"

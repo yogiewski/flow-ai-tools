@@ -4,12 +4,15 @@ services:
     ports:
       - "8501:8501"
     volumes:
+      - ./app:/app/app
+      - ./config:/app/config
+      - ./.streamlit:/app/.streamlit
       - ./data:/app/data
       - ./.env.local:/app/.env.local:ro
     environment:
       - LLM_BASE_URL=http://host.docker.internal
       - LLM_PORT=1234
       - LLM_API_FLAVOR=openai-compatible
-      - LLM_DEFAULT_MODEL=gemma-2b
+      - LLM_DEFAULT_MODEL=openai/gpt-oss-20b
       - FLOWHUB_HOOKS_ENABLED=false
     restart: unless-stopped

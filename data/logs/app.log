@@ -1,0 +1,250 @@
+2025-11-02 19:02:28,883 - __main__ - INFO - Sending message to LLM: openai-compatible at http://192.168.5.127:1234
+2025-11-02 19:02:28,889 - __main__ - ERROR - Unexpected error in send_message: API request failed: HTTPConnectionPool(host='192.168.5.127', port=1234): Max retries exceeded with url: /v1/chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffffb0510dd0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/urllib3/connection.py", line 198, in _new_conn
+    sock = connection.create_connection(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/urllib3/util/connection.py", line 85, in create_connection
+    raise err
+  File "/usr/local/lib/python3.11/site-packages/urllib3/util/connection.py", line 73, in create_connection
+    sock.connect(sa)
+ConnectionRefusedError: [Errno 111] Connection refused
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 787, in urlopen
+    response = self._make_request(
+               ^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 493, in _make_request
+    conn.request(
+  File "/usr/local/lib/python3.11/site-packages/urllib3/connection.py", line 494, in request
+    self.endheaders()
+  File "/usr/local/lib/python3.11/http/client.py", line 1298, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/usr/local/lib/python3.11/http/client.py", line 1058, in _send_output
+    self.send(msg)
+  File "/usr/local/lib/python3.11/http/client.py", line 996, in send
+    self.connect()
+  File "/usr/local/lib/python3.11/site-packages/urllib3/connection.py", line 325, in connect
+    self.sock = self._new_conn()
+                ^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/urllib3/connection.py", line 213, in _new_conn
+    raise NewConnectionError(
+urllib3.exceptions.NewConnectionError: <urllib3.connection.HTTPConnection object at 0xffffb0510dd0>: Failed to establish a new connection: [Errno 111] Connection refused
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.11/site-packages/requests/adapters.py", line 644, in send
+    resp = conn.urlopen(
+           ^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/urllib3/connectionpool.py", line 841, in urlopen
+    retries = retries.increment(
+              ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/urllib3/util/retry.py", line 519, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPConnectionPool(host='192.168.5.127', port=1234): Max retries exceeded with url: /v1/chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffffb0510dd0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/app/app/services/adapters/openai_like.py", line 30, in chat
+    response = requests.post(self.endpoint, json=payload, headers=headers, timeout=30)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/requests/api.py", line 115, in post
+    return request("post", url, data=data, json=json, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/requests/api.py", line 59, in request
+    return session.request(method=method, url=url, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/requests/sessions.py", line 589, in request
+    resp = self.send(prep, **send_kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/requests/sessions.py", line 703, in send
+    r = adapter.send(request, **kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/requests/adapters.py", line 677, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPConnectionPool(host='192.168.5.127', port=1234): Max retries exceeded with url: /v1/chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffffb0510dd0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/app/app/pages/1_Chat.py", line 71, in send_message
+    response = client.chat(
+               ^^^^^^^^^^^^
+  File "/app/app/services/adapters/openai_like.py", line 40, in chat
+    raise Exception(f"API request failed: {str(e)}")
+Exception: API request failed: HTTPConnectionPool(host='192.168.5.127', port=1234): Max retries exceeded with url: /v1/chat/completions (Caused by NewConnectionError('<urllib3.connection.HTTPConnection object at 0xffffb0510dd0>: Failed to establish a new connection: [Errno 111] Connection refused'))
+2025-11-02 20:10:06,779 - __main__ - INFO - Sending message to LLM: openai-compatible at http://host.docker.internal:1234
+2025-11-02 20:10:06,779 - __main__ - INFO - Sending message to LLM: openai-compatible at http://host.docker.internal:1234
+2025-11-02 20:10:15,338 - __main__ - ERROR - Unexpected error in send_message: `st.session_state.user_input` cannot be modified after the widget with key `user_input` is instantiated.
+Traceback (most recent call last):
+  File "/app/app/pages/1_Chat.py", line 89, in send_message
+    st.session_state.user_input = ""
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/streamlit/runtime/metrics_util.py", line 447, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/streamlit/runtime/state/session_state_proxy.py", line 136, in __setattr__
+    self[key] = value
+    ~~~~^^^^^
+  File "/usr/local/lib/python3.11/site-packages/streamlit/runtime/metrics_util.py", line 447, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/streamlit/runtime/state/session_state_proxy.py", line 114, in __setitem__
+    get_session_state()[key] = value
+    ~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/usr/local/lib/python3.11/site-packages/streamlit/runtime/state/safe_session_state.py", line 109, in __setitem__
+    self._state[key] = value
+    ~~~~~~~~~~~^^^^^
+  File "/usr/local/lib/python3.11/site-packages/streamlit/runtime/state/session_state.py", line 540, in __setitem__
+    raise StreamlitAPIException(
+streamlit.errors.StreamlitAPIException: `st.session_state.user_input` cannot be modified after the widget with key `user_input` is instantiated.
+2025-11-02 20:10:15,338 - __main__ - ERROR - Unexpected error in send_message: `st.session_state.user_input` cannot be modified after the widget with key `user_input` is instantiated.
+Traceback (most recent call last):
+  File "/app/app/pages/1_Chat.py", line 89, in send_message
+    st.session_state.user_input = ""
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/streamlit/runtime/metrics_util.py", line 447, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/streamlit/runtime/state/session_state_proxy.py", line 136, in __setattr__
+    self[key] = value
+    ~~~~^^^^^
+  File "/usr/local/lib/python3.11/site-packages/streamlit/runtime/metrics_util.py", line 447, in wrapped_func
+    result = non_optional_func(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.11/site-packages/streamlit/runtime/state/session_state_proxy.py", line 114, in __setitem__
+    get_session_state()[key] = value
+    ~~~~~~~~~~~~~~~~~~~^^^^^
+  File "/usr/local/lib/python3.11/site-packages/streamlit/runtime/state/safe_session_state.py", line 109, in __setitem__
+    self._state[key] = value
+    ~~~~~~~~~~~^^^^^
+  File "/usr/local/lib/python3.11/site-packages/streamlit/runtime/state/session_state.py", line 540, in __setitem__
+    raise StreamlitAPIException(
+streamlit.errors.StreamlitAPIException: `st.session_state.user_input` cannot be modified after the widget with key `user_input` is instantiated.
+2025-11-02 20:12:25,564 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:12:34,827 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:12:34,827 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:12:38,694 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:12:38,694 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:12:38,694 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:12:41,722 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:12:41,722 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:12:41,722 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:12:41,722 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:12:44,460 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:12:44,460 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:12:44,460 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:12:44,460 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:12:44,460 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:13:16,558 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:13:20,946 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:13:20,946 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:13:37,426 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:13:37,426 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:13:37,426 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:15:59,816 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:04,061 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:04,061 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:21,081 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:21,081 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:21,081 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:21,466 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:21,466 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:21,466 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:21,466 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:32,973 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:32,973 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:32,973 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:32,973 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:32,973 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:40,968 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:40,968 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:40,968 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:40,968 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:40,968 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:40,968 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:44,166 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:44,166 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:44,166 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:44,166 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:44,166 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:44,166 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:16:44,166 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:18:56,157 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:19:02,179 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:19:02,179 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:19:02,179 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:19:37,511 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:20:02,170 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:20:02,170 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:20:04,295 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:20:04,295 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:20:04,295 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:21:34,884 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:21:34,884 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:21:34,884 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:21:34,884 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:05,402 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:09,985 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:09,985 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:13,005 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:13,005 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:13,005 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:18,644 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:18,644 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:18,644 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:18,644 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:20,617 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:20,617 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:20,617 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:20,617 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:20,617 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:20,617 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:24,319 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:24,319 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:24,319 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:24,319 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:24,319 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:24,319 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:24,319 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:22:24,319 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:23:26,692 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:23:31,265 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:23:31,265 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:23:32,623 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:23:32,623 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:23:32,623 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:23:35,991 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:23:35,991 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:23:35,991 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:23:35,991 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:25:56,634 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:25:59,775 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:25:59,775 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:26:02,937 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:26:02,937 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:26:02,937 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:26:17,512 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:26:17,512 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:26:17,512 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:26:17,512 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:26:45,928 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:26:45,928 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:26:45,928 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:26:45,928 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:26:45,928 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:39:49,516 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:42:42,811 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:50:26,282 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:52:35,195 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:57:11,728 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 20:59:39,504 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 21:00:54,596 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 21:03:32,398 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 21:05:37,045 - __main__ - WARNING - Unsplash API returned status 401
+2025-11-02 21:07:46,897 - __main__ - WARNING - Unsplash API returned status 401

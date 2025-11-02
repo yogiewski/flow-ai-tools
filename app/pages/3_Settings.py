@@ -1,14 +1,47 @@
-import streamlit as st
+import sys
 import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+import streamlit as st
 from pathlib import Path
-from ..utils.config import get_config
+from utils.config import get_config
+from utils.translator import translator
+import shutil
+
+# Load custom CSS
+def load_css():
+    css_path = Path(__file__).parent.parent / "ui" / "theme.css"
+    if css_path.exists():
+        with open(css_path) as f:
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 # Page config
 st.set_page_config(
-    page_title="Settings",
-    page_icon="⚙️",
+    page_title=translator.get("settings_title").replace("⚙ ", ""),
+    page_icon="⚙",
     layout="wide"
 )
+
+# Load custom styling
+load_css()
+
+# Set translator language
+if 'language' not in st.session_state:
+    st.session_state.language = "pl"
+translator.set_language(st.session_state.language)
+
+def apply_theme(theme_name: str):
+    """Apply a theme by copying the theme file to config.toml."""
+    themes_dir = Path('.streamlit/themes')
+    theme_file = themes_dir / f"{theme_name}.toml"
+    config_file = Path('.streamlit/config.toml')
+
+    if theme_file.exists():
+        shutil.copy(theme_file, config_file)
+        st.success(f"{translator.get('status_messages.success')}: {theme_name.replace('_', ' ').title()} {translator.get('theme_applied')}")
+        st.info(translator.get("settings_instructions"))
+    else:
+        st.error(translator.get("theme_not_found").format(theme_name=theme_name))
 
 def save_settings(settings: dict):
     """Save settings to .env.local file."""
@@ -42,62 +75,97 @@ def save_settings(settings: dict):
         for key, value in existing_content.items():
             f.write(f"{key}={value}\n")
 
-    st.success("Settings saved! Please restart the app for changes to take effect.")
+    st.success(translator.get("status_messages.success"))
 
 # Load current config
 config = get_config()
 
-st.title("⚙️ Settings")
+# Language selector in sidebar
+with st.sidebar:
+    st.markdown(f"### {translator.get('language_selector')}")
+    available_languages = translator.get_available_languages()
+    language_options = list(available_languages.keys())
+    language_labels = [available_languages[lang] for lang in language_options]
 
-st.header("LLM Configuration")
+    selected_idx = language_options.index(st.session_state.language) if st.session_state.language in language_options else 0
+    selected_language = st.selectbox(
+        translator.get("select_language"),
+        language_options,
+        index=selected_idx,
+        format_func=lambda x: available_languages[x],
+        key="language_selector_settings"
+    )
+
+    if selected_language != st.session_state.language:
+        st.session_state.language = selected_language
+        translator.set_language(selected_language)
+        st.rerun()
+
+st.title(translator.get("settings_title"))
+
+st.header(translator.get("llm_settings_title"))
 
 # LLM Settings Form
 with st.form("llm_settings"):
-    st.subheader("Default LLM Settings")
+    st.subheader(translator.get("llm_settings_title"))
 
     base_url = st.text_input(
-        "Base URL",
+        translator.get("base_url_label"),
         value=config['llm_base_url'],
-        help="Default base URL for LLM API"
+        help=translator.get("base_url_help")
     )
 
     port = st.number_input(
-        "Port",
+        translator.get("port_label"),
         value=config['llm_port'],
         min_value=1,
         max_value=65535,
-        help="Default port for LLM API"
+        help=translator.get("base_url_help")
     )
 
+    api_flavors = translator.get("api_flavors")
+    api_options = list(api_flavors.keys())
+    api_labels = [api_flavors[flavor] for flavor in api_options]
+
+    selected_api_idx = api_options.index(config['llm_api_flavor']) if config['llm_api_flavor'] in api_options else 0
     api_flavor = st.selectbox(
-        "API Flavor",
-        ["openai-compatible", "ollama", "lmstudio"],
-        index=["openai-compatible", "ollama", "lmstudio"].index(config['llm_api_flavor']),
-        help="Type of LLM API to use"
+        translator.get("api_flavor_label"),
+        api_options,
+        index=selected_api_idx,
+        format_func=lambda x: api_flavors[x],
+        help=translator.get("api_flavor_label")
     )
 
     default_model = st.text_input(
-        "Default Model",
+        translator.get("model_label"),
         value=config['llm_default_model'],
-        help="Default model name to use"
+        help=translator.get("model_label")
     )
 
-    st.header("FlowHub Integration")
+    st.header(translator.get("flowhub_settings_title"))
 
     flowhub_enabled = st.checkbox(
-        "Enable FlowHub Hooks",
+        translator.get("flowhub_enabled_label"),
         value=config['flowhub_hooks_enabled'],
-        help="Send events to FlowHub for integration with other systems"
+        help=translator.get("flowhub_enabled_help")
     )
 
     flowhub_url = st.text_input(
-        "FlowHub Webhook URL",
+        translator.get("flowhub_url_label"),
         value=config['flowhub_webhook_url'],
-        help="URL to send webhook events to FlowHub",
+        help=translator.get("flowhub_url_help"),
         disabled=not flowhub_enabled
     )
 
-    submitted = st.form_submit_button("Save Settings")
+    submitted = st.form_submit_button(translator.get("save_settings_button"))
+
+# Theme Selection (outside the form)
+st.header(translator.get("ui_theme_title"))
+
+st.info(translator.get("using_minimal_theme"))
+
+if st.button(translator.get("reset_theme_button"), type="secondary"):
+    apply_theme("minimal")
 
     if submitted:
         settings = {
@@ -111,9 +179,9 @@ with st.form("llm_settings"):
         save_settings(settings)
 
 # Current Configuration Display
-st.header("Current Configuration")
+st.header(translator.get("current_config_title"))
 
-st.subheader("Environment Variables")
+st.subheader(translator.get("env_vars_title"))
 env_vars = {
     'LLM_BASE_URL': config['llm_base_url'],
     'LLM_PORT': config['llm_port'],
@@ -125,31 +193,24 @@ env_vars = {
 
 for key, value in env_vars.items():
     if key == 'FLOWHUB_WEBHOOK_URL' and not value:
-        st.caption(f"{key}: (not set)")
+        st.caption(f"{key}: {translator.get('not_set')}")
     else:
         st.caption(f"{key}: {value}")
 
 # File locations
-st.header("File Locations")
-st.caption(f"Settings file: {Path('.env.local').absolute()}")
-st.caption(f"Prompts directory: {Path('data/prompts').absolute()}")
+st.header(translator.get("file_locations_title"))
+st.caption(f"{translator.get('settings_file_caption')} {Path('.env.local').absolute()}")
+st.caption(f"{translator.get('prompts_directory_caption')} {Path('data/prompts').absolute()}")
 
 # Instructions
-st.header("Instructions")
-st.markdown("""
-**To apply settings changes:**
-1. Save the settings above
-2. Restart the Streamlit app
-3. The new defaults will be loaded
-
-**Note:** Settings are stored in `.env.local` which overrides `.env` values.
-""")
+st.header(translator.get("instructions_title"))
+st.markdown(translator.get("settings_instructions"))
 
 # Test Connection (optional)
-st.header("Test Connection")
-if st.button("Test LLM Connection"):
+st.header(translator.get("test_connection_button"))
+if st.button(translator.get("test_connection_button")):
     try:
-        from ..services.llm_client import get_llm_client
+        from services.llm_factory import get_llm_client
 
         client = get_llm_client(
             config['llm_api_flavor'],
@@ -158,7 +219,7 @@ if st.button("Test LLM Connection"):
         )
 
         models = client.models()
-        st.success(f"Connection successful! Available models: {', '.join(models[:5])}")
+        st.success(f"{translator.get('connection_success')}! {translator.get('available_models')}: {', '.join(models[:5])}")
 
     except Exception as e:
-        st.error(f"Connection failed: {str(e)}")
+        st.error(f"{translator.get('connection_failed')}: {str(e)}")

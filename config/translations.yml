@@ -1,0 +1,207 @@
+locales:
+  en:
+    app_title: FlowAI
+    app_subtitle: AI-powered chat for sales teams
+    nav_chat: FlowAI
+    nav_prompts: AI Tools
+    nav_settings: ⚙ Settings
+    sidebar_title: LLM Configuration
+    base_url_label: Base URL
+    base_url_help: e.g., http://192.168.1.23
+    port_label: Port
+    api_flavor_label: API Flavor
+    model_label: Model
+    start_chat_button: Start Chat
+    clear_chat_button: Clear Chat
+    advanced_settings: Advanced Settings
+    temperature_label: Temperature
+    max_tokens_label: Max Tokens
+    chat_title: Chat
+    chat_not_started: Select a prompt and click 'Start Chat' to begin.
+    using_prompt: Using
+    regenerate_button: Regenerate Last Response
+    clear_session_button: Clear Session
+    prompts_title: AI Tools
+    create_new_prompt: ⊕ Add Tool
+    prompt_title_label: Title
+    prompt_category_label: Category
+    prompt_tags_label: Tags (comma-separated)
+    prompt_content_label: Prompt Content (Markdown)
+    prompt_preview: Preview
+    save_prompt_button: Save Prompt
+    cancel_button: Cancel
+    edit_button: ✎ Edit
+    delete_button: × Delete
+    available_prompts: Available Prompts
+    settings_title: ⚙ Settings
+    llm_settings_title: Default LLM Settings
+    flowhub_settings_title: FlowHub Integration
+    flowhub_enabled_label: Enable FlowHub Hooks
+    flowhub_enabled_help: Send events to FlowHub for integration with other systems
+    flowhub_url_label: FlowHub Webhook URL
+    flowhub_url_help: URL to send webhook events to FlowHub
+    save_settings_button: Save Settings
+    current_config_title: Current Configuration
+    env_vars_title: Environment Variables
+    file_locations_title: File Locations
+    instructions_title: Instructions
+    settings_instructions: "To apply settings changes:\n\n1. Save the settings above\n\n2. Restart the Streamlit app\n\n3. The new defaults will be loaded"
+    test_connection_button: Test LLM Connection
+    connection_success: Connection successful!
+    connection_failed: Connection failed
+    language_selector: Language / Język
+    select_language: Select Language
+    categories:
+      general: General
+      sales: Sales
+      support: Support
+      technical: Technical
+      marketing: Marketing
+    api_flavors:
+      openai-compatible: OpenAI Compatible
+      ollama: Ollama
+      lmstudio: LM Studio
+    status_messages:
+      success: Success
+      error: Error
+      warning: Warning
+      info: Information
+      loading: Loading...
+      connecting: Connecting...
+      sending: Sending message...
+      waiting_response: Waiting for response...
+    errors:
+      connection_error: Connection Error
+      timeout_error: Request Timeout
+      config_error: Configuration Error
+      unexpected_error: Unexpected Error
+      title_required: Title is required.
+      content_required: Content is required.
+      prompt_not_found: Prompt not found.
+      save_failed: Failed to save prompt.
+      delete_failed: Failed to delete prompt.
+    available_models: Available models
+    using_minimal_theme: Using minimal theme for clean, distraction-free interface.
+    ui_theme_title: ◐ Theme
+    reset_theme_button: Reset to Minimal Theme
+    settings_file_caption: 'Settings file:'
+    prompts_directory_caption: 'Prompts directory:'
+    not_set: (not set)
+    tags_label: 'Tags:'
+    select_button: Select
+    edit_button_short: Edit
+    delete_button_short: Delete
+    current_configuration: Current Configuration
+    llm_settings_section: 'LLM Settings:'
+    integration_section: 'Integration:'
+    flowhub_status: 'FlowHub:'
+    webhook_label: 'Webhook:'
+    theme_applied: theme applied!
+    theme_not_found: Theme '{theme_name}' not found.
+    nav_description: Navigate to different sections using the sidebar.
+    no_prompts_found: No prompts found. Create your first prompt!
+    category_label: "Category:"
+  pl:
+    app_title: FlowAI
+    app_subtitle: Narzędzia AI dla zespołów sprzedaży i obsługi technicznej
+    nav_chat: FlowAI
+    nav_prompts: Narzędzia AI
+    nav_settings: ⚙ Ustawienia
+    sidebar_title: Konfiguracja modelu LLM
+    base_url_label: Adres bazowy (Base URL)
+    base_url_help: np. http://192.168.1.23
+    port_label: Port
+    api_flavor_label: Rodzaj API
+    model_label: Model
+    start_chat_button: Uruchom asystenta
+    clear_chat_button: Wyczyść rozmowę
+    advanced_settings: Ustawienia zaawansowane
+    temperature_label: Temperatura (kreatywność)
+    max_tokens_label: Maksymalna liczba tokenów
+    chat_title: Asystent AI
+    chat_not_started: Wybierz narzędzie AI i kliknij „Uruchom asystenta”, aby rozpocząć.
+    using_prompt: 'Aktywne narzędzie:'
+    regenerate_button: Wygeneruj ponownie ostatnią odpowiedź
+    clear_session_button: Wyczyść sesję
+    prompts_title: Narzędzia AI
+    create_new_prompt: ⊕ Dodaj narzędzie
+    prompt_title_label: Nazwa narzędzia
+    prompt_category_label: Kategoria
+    prompt_tags_label: Tagi (oddzielone przecinkami)
+    prompt_content_label: Treść promptu / instrukcji (Markdown)
+    prompt_preview: Podgląd
+    save_prompt_button: Zapisz narzędzie
+    cancel_button: Anuluj
+    edit_button: ✎ Edytuj
+    delete_button: × Usuń
+    available_prompts: Dostępne narzędzia
+    settings_title: ⚙ Ustawienia
+    llm_settings_title: Domyślne ustawienia modelu LLM
+    flowhub_settings_title: Integracja z FlowHub
+    flowhub_enabled_label: Aktywuj integrację z FlowHub
+    flowhub_enabled_help: Pozwala przesyłać zdarzenia do FlowHub w celu integracji
+      z innymi systemami i procesami
+    flowhub_url_label: Adres webhook FlowHub
+    flowhub_url_help: Adres URL, na który wysyłane są zdarzenia webhook do FlowHub
+    save_settings_button: Zapisz ustawienia
+    current_config_title: Bieżąca konfiguracja
+    env_vars_title: Zmienne środowiskowe
+    file_locations_title: Lokalizacje plików
+    instructions_title: Instrukcje
+    settings_instructions: "Aby zastosować zmiany w konfiguracji:\n\n1. Zapisz ustawienia powyżej\n\n2. Uruchom ponownie aplikację Streamlit\n\n3. Nowe wartości zostaną wczytane automatycznie"
+    test_connection_button: Przetestuj połączenie z LLM
+    connection_success: Połączenie zakończone powodzeniem!
+    connection_failed: Nie udało się nawiązać połączenia z modelem
+    language_selector: Język / Language
+    select_language: Wybierz język
+    categories:
+      general: Ogólne
+      sales: Sprzedaż i oferty
+      support: Obsługa klienta
+      technical: Wsparcie techniczne
+      marketing: Marketing
+    api_flavors:
+      openai-compatible: Kompatybilne z OpenAI
+      ollama: Ollama
+      lmstudio: LM Studio
+    status_messages:
+      success: Sukces
+      error: Błąd
+      warning: Ostrzeżenie
+      info: Informacja
+      loading: Ładowanie...
+      connecting: Łączenie z modelem...
+      sending: Wysyłanie zapytania...
+      waiting_response: Oczekiwanie na odpowiedź...
+    errors:
+      connection_error: Błąd połączenia z modelem
+      timeout_error: Przekroczono limit czasu odpowiedzi
+      config_error: Błąd konfiguracji
+      unexpected_error: Nieoczekiwany błąd
+      title_required: Nazwa narzędzia jest wymagana.
+      content_required: Treść promptu jest wymagana.
+      prompt_not_found: Nie znaleziono wybranego narzędzia.
+      save_failed: Nie udało się zapisać narzędzia.
+      delete_failed: Nie udało się usunąć narzędzia.
+    available_models: Dostępne modele
+    using_minimal_theme: Używanie minimalnego motywu dla czystego, wolnego od rozproszeń
+      interfejsu.
+    ui_theme_title: ◐ Motyw
+    reset_theme_button: Przywróć motyw minimalny
+    settings_file_caption: 'Plik ustawień:'
+    prompts_directory_caption: 'Katalog narzędzi:'
+    not_set: (nie ustawione)
+    tags_label: 'Tagi:'
+    select_button: Wybierz
+    edit_button_short: Edytuj
+    delete_button_short: Usuń
+    current_configuration: Bieżąca konfiguracja
+    llm_settings_section: 'Ustawienia LLM:'
+    integration_section: 'Integracja:'
+    flowhub_status: 'FlowHub:'
+    webhook_label: 'Webhook:'
+    theme_applied: motyw zastosowany!
+    theme_not_found: Motyw '{theme_name}' nie został znaleziony.
+    nav_description: Przechodź między różnymi sekcjami używając panelu bocznego.
+    no_prompts_found: Nie znaleziono żadnych narzędzi. Utwórz swoje pierwsze narzędzie!
+    category_label: "Kategoria:"
