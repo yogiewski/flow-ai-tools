@@ -51,6 +51,7 @@ locales:
     connection_failed: Connection failed
     language_selector: Language / Język
     select_language: Select Language
+    select_ai_tool: Select AI Tool
     categories:
       general: General
       sales: Sales
@@ -154,6 +155,7 @@ locales:
     connection_failed: Nie udało się nawiązać połączenia z modelem
     language_selector: Język / Language
     select_language: Wybierz język
+    select_ai_tool: Wybierz narzędzie AI
     categories:
       general: Ogólne
       sales: Sprzedaż i oferty
