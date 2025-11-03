@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 
 class LLMClient(ABC):
@@ -15,6 +15,22 @@ class LLMClient(ABC):
 
         Returns:
             Dict containing the response with 'content' and other metadata
+        """
+        pass
+
+    @abstractmethod
+    def chat_with_tools(self, messages: List[Dict[str, Any]], tools: Optional[List[Dict[str, Any]]] = None,
+                       tool_choice: Optional[str] = None, **kwargs) -> Dict[str, Any]:
+        """Send a chat request with tool support and return the response.
+
+        Args:
+            messages: List of message dicts with 'role' and 'content' keys
+            tools: List of available tools
+            tool_choice: Tool choice strategy ("none", "auto", or specific tool)
+            **kwargs: Additional parameters like temperature, max_tokens, etc.
+
+        Returns:
+            Dict containing the response with 'content', 'tool_calls', and other metadata
         """
         pass
 

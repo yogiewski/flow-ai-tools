@@ -13,6 +13,7 @@ def get_config() -> Dict[str, Any]:
         'llm_port': int(os.getenv('LLM_PORT', '1234')),
         'llm_api_flavor': os.getenv('LLM_API_FLAVOR', 'openai-compatible'),
         'llm_default_model': os.getenv('LLM_DEFAULT_MODEL', 'gpt-3.5-turbo'),
+        'mcp_base_url': os.getenv('MCP_BASE_URL', 'http://localhost:8000'),
         'flowhub_hooks_enabled': os.getenv('FLOWHUB_HOOKS_ENABLED', 'false').lower() == 'true',
         'flowhub_webhook_url': os.getenv('FLOWHUB_WEBHOOK_URL', ''),
     }

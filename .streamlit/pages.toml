@@ -1,0 +1,14 @@
+[[pages]]
+path = "app/FlowAI.py"
+title = "FlowAI"
+icon = ":material/chat:"
+
+[[pages]]
+path = "app/pages/1 - Narzędzia AI.py"
+title = "Narzędzia AI"
+icon = ":material/build:"
+
+[[pages]]
+path = "app/pages/2 - Ustawienia.py"
+title = "Ustawienia"
+icon = ":material/settings:"

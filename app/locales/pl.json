@@ -1,7 +1,7 @@
 {
   "app_title": "FlowAI",
   "app_subtitle": "Narzędzia AI dla zespołów sprzedaży i obsługi technicznej",
-  "nav_chat": "FlowAI",
+  "nav_chat": "Strona główna",
   "nav_prompts": "Narzędzia AI",
   "nav_settings": "⚙ Ustawienia",
   "sidebar_title": "Konfiguracja modelu LLM",
@@ -101,6 +101,7 @@
    "flowhub_status": "FlowHub:",
    "webhook_label": "Webhook:",
    "theme_applied": "motyw zastosowany!",
-   "theme_not_found": "Motyw '{theme_name}' nie został znaleziony.",
-   "nav_description": "Przechodź między różnymi sekcjami używając panelu bocznego."
+    "theme_not_found": "Motyw '{theme_name}' nie został znaleziony.",
+    "nav_description": "Przechodź między różnymi sekcjami używając panelu bocznego.",
+    "sidebar_tool_selection_hint": "Wybierz narzędzie AI z panelu bocznego, aby dostosować zachowanie asystenta."
 }

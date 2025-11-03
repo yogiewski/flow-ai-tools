@@ -88,11 +88,9 @@ def delete_prompt(prompt_id: str):
 st.title(translator.get("prompts_title"))
 
 # Action buttons
-col1, col2 = st.columns([1, 4])
-with col1:
-    if st.button(translator.get("create_new_prompt"), type="secondary"):
-        st.session_state.show_create_form = True
-        st.session_state.editing_prompt = None
+if st.button(translator.get("create_new_prompt"), type="secondary", use_container_width=True):
+    st.session_state.show_create_form = True
+    st.session_state.editing_prompt = None
 
 # Create/Edit Form
 if st.session_state.show_create_form or st.session_state.editing_prompt:
@@ -165,8 +163,6 @@ if st.session_state.show_create_form or st.session_state.editing_prompt:
 
 else:
     # Prompts List
-    st.header(translator.get("available_prompts"))
-
     prompts = prompts_repo.list_prompts()
 
     if not prompts:
@@ -174,7 +170,7 @@ else:
     else:
         for prompt in prompts:
             with st.container():
-                col1, col2, col3, col4 = st.columns([3, 2, 1, 1])
+                col1, col2 = st.columns([3, 2])
 
                 with col1:
                     st.subheader(prompt['title'])
@@ -190,14 +186,15 @@ else:
                         preview = content_preview['content'][:100] + "..." if len(content_preview['content']) > 100 else content_preview['content']
                         st.text(preview)
 
-                with col3:
-                    if st.button(translator.get("edit_button_short"), key=f"edit_{prompt['id']}", type="secondary"):
-                        st.session_state.editing_prompt = prompt['id']
-                        st.session_state.show_create_form = False
-                        st.rerun()
-
-                with col4:
-                    if st.button(translator.get("delete_button_short"), key=f"delete_{prompt['id']}", type="secondary"):
-                        delete_prompt(prompt['id'])
+                    # Action buttons in the description column
+                    button_col1, button_col2 = st.columns([1, 1])
+                    with button_col1:
+                        if st.button(translator.get("edit_button_short"), key=f"edit_{prompt['id']}", type="secondary", use_container_width=True):
+                            st.session_state.editing_prompt = prompt['id']
+                            st.session_state.show_create_form = False
+                            st.rerun()
+                    with button_col2:
+                        if st.button(translator.get("delete_button_short"), key=f"delete_{prompt['id']}", type="secondary", use_container_width=True):
+                            delete_prompt(prompt['id'])
 
                 st.divider()

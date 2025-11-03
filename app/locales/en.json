@@ -1,7 +1,7 @@
 {
   "app_title": "FlowAI",
   "app_subtitle": "AI-powered chat for sales teams",
-  "nav_chat": "FlowAI",
+  "nav_chat": "Home",
   "nav_prompts": "AI Tools",
   "nav_settings": "⚙ Settings",
 
@@ -110,6 +110,7 @@
    "flowhub_status": "FlowHub:",
    "webhook_label": "Webhook:",
    "theme_applied": "theme applied!",
-   "theme_not_found": "Theme '{theme_name}' not found.",
-   "nav_description": "Navigate to different sections using the sidebar."
+    "theme_not_found": "Theme '{theme_name}' not found.",
+    "nav_description": "Navigate to different sections using the sidebar.",
+    "sidebar_tool_selection_hint": "Select your AI tool from the sidebar to customize the assistant's behavior."
 }

@@ -14,6 +14,11 @@ class LMStudioClient(LLMClient):
 
     def chat(self, messages: List[Dict[str, Any]], **kwargs) -> Dict[str, Any]:
         """Send chat completion request to LM Studio."""
+        return self.chat_with_tools(messages, tools=None, **kwargs)
+
+    def chat_with_tools(self, messages: List[Dict[str, Any]], tools: Optional[List[Dict[str, Any]]] = None,
+                       tool_choice: Optional[str] = None, **kwargs) -> Dict[str, Any]:
+        """Send chat completion request with tool support to LM Studio."""
         headers = {"Content-Type": "application/json"}
 
         payload = {
@@ -24,16 +29,29 @@ class LMStudioClient(LLMClient):
             "stream": False
         }
 
+        # Add tools if provided
+        if tools:
+            payload["tools"] = tools
+            if tool_choice:
+                payload["tool_choice"] = tool_choice
+
         try:
             response = requests.post(self.endpoint, json=payload, headers=headers, timeout=30)
             response.raise_for_status()
             data = response.json()
 
-            return {
+            result = {
                 "content": data["choices"][0]["message"]["content"],
                 "usage": data.get("usage", {}),
                 "model": data.get("model", payload["model"])
             }
+
+            # Include tool calls if present
+            message = data["choices"][0]["message"]
+            if "tool_calls" in message:
+                result["tool_calls"] = message["tool_calls"]
+
+            return result
         except requests.RequestException as e:
             raise Exception(f"LM Studio API request failed: {str(e)}")
 

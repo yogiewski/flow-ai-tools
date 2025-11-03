@@ -13,6 +13,17 @@ class OllamaClient(LLMClient):
 
     def chat(self, messages: List[Dict[str, Any]], **kwargs) -> Dict[str, Any]:
         """Send chat request to Ollama."""
+        return self.chat_with_tools(messages, tools=None, **kwargs)
+
+    def chat_with_tools(self, messages: List[Dict[str, Any]], tools: Optional[List[Dict[str, Any]]] = None,
+                       tool_choice: Optional[str] = None, **kwargs) -> Dict[str, Any]:
+        """Send chat request to Ollama (tools not supported)."""
+        # Ollama doesn't support tools in the same way as OpenAI
+        # For now, we'll ignore tools and just do regular chat
+        if tools:
+            # Log warning that tools are not supported
+            pass
+
         # Convert messages to Ollama format
         # Ollama expects a single prompt, so we'll concatenate messages
         prompt = ""

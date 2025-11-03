@@ -17,7 +17,7 @@ def load_css():
 
 # Page config
 st.set_page_config(
-    page_title=translator.get("settings_title").replace("⚙ ", ""),
+    page_title=translator.get("nav_settings"),
     page_icon="⚙",
     layout="wide"
 )
@@ -107,7 +107,6 @@ st.header(translator.get("llm_settings_title"))
 
 # LLM Settings Form
 with st.form("llm_settings"):
-    st.subheader(translator.get("llm_settings_title"))
 
     base_url = st.text_input(
         translator.get("base_url_label"),

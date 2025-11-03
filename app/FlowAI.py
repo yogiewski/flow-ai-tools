@@ -68,17 +68,16 @@ def get_random_unsplash_photo():
 
 # Chat functions
 def send_message():
-    """Send a message to the LLM and get response."""
+    """Send a message to the LLM with MCP tool orchestration."""
     if not st.session_state.messages:
         return
 
     try:
-        # Get LLM client
-        client = get_llm_client(
-            config['llm_api_flavor'],
-            config['llm_base_url'],
-            config['llm_port']
-        )
+        from components.chat_ui import ChatUI
+        from services.mcp_client import MCPClient
+
+        chat_ui = ChatUI()
+        mcp_client = MCPClient()
 
         # Prepare messages with prompt if selected
         messages_to_send = st.session_state.messages.copy()
@@ -92,21 +91,18 @@ def send_message():
                 }
                 messages_to_send.insert(0, system_message)
 
-        # Get response
-        with st.spinner(translator.get("status_messages.waiting_response")):
-            response = client.chat(
-                messages_to_send,
-                model=config['llm_default_model'],
-                temperature=0.7,
-                max_tokens=2048
-            )
+        # Get available tools
+        tools = mcp_client.get_available_tools()
 
-        # Add assistant response
-        assistant_message = {
-            "role": "assistant",
-            "content": response["content"]
-        }
-        st.session_state.messages.append(assistant_message)
+        # Get user input from the most recent message
+        user_input = ""
+        for msg in reversed(st.session_state.messages):
+            if msg["role"] == "user":
+                user_input = msg["content"]
+                break
+
+        # Send message with tool orchestration
+        st.session_state.messages = chat_ui.send_message(messages_to_send, user_input, tools)
 
     except Exception as e:
         logger.error(f"Error sending message: {e}")
@@ -209,10 +205,23 @@ st.session_state.chat_started = True
 # Chat messages
 chat_container = st.container()
 with chat_container:
-    for message in st.session_state.messages:
-        if message["role"] != "system":  # Don't display system messages
-            with st.chat_message(message["role"]):
-                st.markdown(message["content"])
+    try:
+        from components.chat_ui import ChatUI
+        from services.mcp_client import MCPClient
+
+        chat_ui = ChatUI()
+        mcp_client = MCPClient()
+        tools = mcp_client.get_available_tools()
+
+        # Filter out system messages for display
+        display_messages = [msg for msg in st.session_state.messages if msg["role"] != "system"]
+        chat_ui.render_chat(display_messages, tools)
+    except ImportError:
+        # Fallback to simple display if imports fail
+        for message in st.session_state.messages:
+            if message["role"] != "system":  # Don't display system messages
+                with st.chat_message(message["role"]):
+                    st.markdown(message["content"])
 
 # Enhanced input styling - monochrome
 st.markdown("""
