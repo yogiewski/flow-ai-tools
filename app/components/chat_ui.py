@@ -31,7 +31,7 @@ class ChatUI:
                 self._render_tool_calls(message["tool_calls"])
             elif role == "tool":
                 # Tool result message
-                self._render_tool_result(message)
+                self._render_tool_result(message, index)
             else:
                 # Regular message
                 st.markdown(content)
@@ -47,7 +47,7 @@ class ChatUI:
                 except:
                     st.code(tc['function']['arguments'])
 
-    def _render_tool_result(self, message: Dict[str, Any]):
+    def _render_tool_result(self, message: Dict[str, Any], index: int):
         """Render tool execution result."""
         try:
             result = json.loads(message["content"])
@@ -56,7 +56,7 @@ class ChatUI:
             if status == "success" or status == "queued" or status == "sent":
                 self._render_success_tool_result(result)
             else:
-                self._render_error_tool_result(result)
+                self._render_error_tool_result(result, index)
         except json.JSONDecodeError:
             # Raw content
             st.markdown(message["content"])
@@ -84,7 +84,7 @@ class ChatUI:
             if "message_id" in result:
                 st.markdown(f"**Message ID:** {result['message_id']}")
 
-    def _render_error_tool_result(self, result: Dict[str, Any]):
+    def _render_error_tool_result(self, result: Dict[str, Any], index: int):
         """Render error tool result."""
         error_msg = result.get("message", "Tool execution failed")
 
@@ -92,7 +92,7 @@ class ChatUI:
         with col1:
             st.error(f"⚠️ {error_msg}")
         with col2:
-            if st.button("🔄 Retry", key=f"retry_{result.get('result_type', 'unknown')}"):
+            if st.button("🔄 Retry", key=f"retry_{result.get('result_type', 'unknown')}_{index}"):
                 st.rerun()
 
         # Show raw error details
