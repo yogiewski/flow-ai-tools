@@ -1,4 +1,5 @@
 import requests
+import json
 from typing import List, Dict, Any, Optional
 from ..llm_client import LLMClient
 
@@ -34,6 +35,9 @@ class LMStudioClient(LLMClient):
             payload["tools"] = tools
             if tool_choice:
                 payload["tool_choice"] = tool_choice
+            print(f"DEBUG LMStudio: Sending {len(tools)} tools to LM Studio")
+            for tool in tools[:2]:
+                print(f"DEBUG LMStudio: Tool name: {tool['function']['name']}")
 
         try:
             response = requests.post(self.endpoint, json=payload, headers=headers, timeout=30)
@@ -48,8 +52,41 @@ class LMStudioClient(LLMClient):
 
             # Include tool calls if present
             message = data["choices"][0]["message"]
-            if "tool_calls" in message:
+            if "tool_calls" in message and message["tool_calls"]:
                 result["tool_calls"] = message["tool_calls"]
+                print(f"DEBUG LMStudio: Received {len(message['tool_calls'])} tool calls from LM Studio")
+                for tc in message["tool_calls"]:
+                    print(f"DEBUG LMStudio: Tool call: {tc['function']['name']}")
+            else:
+                # Check for custom tool format in content
+                content = message.get("content", "")
+                if content.startswith("<|start|>assistant<|channel|>commentary to=functions."):
+                    try:
+                        # Extract tool name
+                        start_tool = content.find("functions.") + len("functions.")
+                        end_tool = content.find(" <|constrain|>")
+                        tool_name = content[start_tool:end_tool]
+
+                        # Extract JSON args
+                        start_json = content.find("<|message|>") + len("<|message|>")
+                        json_str = content[start_json:].strip()
+                        if json_str.startswith("{") and json_str.endswith("}"):
+                            args = json.loads(json_str)
+
+                            # Convert to OpenAI format
+                            result["tool_calls"] = [{
+                                "id": f"call_{hash(content)}",
+                                "type": "function",
+                                "function": {
+                                    "name": tool_name,
+                                    "arguments": json.dumps(args)
+                                }
+                            }]
+                            # Remove the tool call from content
+                            result["content"] = ""
+                            print(f"DEBUG LMStudio: Parsed custom tool call from content: {tool_name} with args: {args}")
+                    except (ValueError, json.JSONDecodeError) as e:
+                        print(f"DEBUG LMStudio: Failed to parse custom tool format from content: {e}")
 
             return result
         except requests.RequestException as e:

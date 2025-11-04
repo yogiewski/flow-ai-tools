@@ -72,6 +72,8 @@ def send_message():
     if not st.session_state.messages:
         return
 
+    print("DEBUG: send_message called")
+
     try:
         from components.chat_ui import ChatUI
         from services.mcp_client import MCPHTTPClient
@@ -93,6 +95,7 @@ def send_message():
 
         # Get available tools
         tools = mcp_client.list_tools()
+        print(f"DEBUG: Got {len(tools)} tools")
 
         # Get user input from the most recent message
         user_input = ""
@@ -101,8 +104,10 @@ def send_message():
                 user_input = msg["content"]
                 break
 
+        print(f"DEBUG: Sending message: {user_input[:50]}...")
         # Send message with tool orchestration
         st.session_state.messages = chat_ui.send_message(messages_to_send, user_input, tools)
+        print("DEBUG: Message sent successfully")
 
     except Exception as e:
         logger.error(f"Error sending message: {e}")

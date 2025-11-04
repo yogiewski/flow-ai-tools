@@ -5,5 +5,6 @@ LLM_PORT = 1234
 LLM_DEFAULT_MODEL = "local-model"
 
 # MCP Server Configuration
-MCP_SERVER_URL = "http://localhost:8000"
+import os
+MCP_SERVER_URL = os.getenv('MCP_BASE_URL', 'http://localhost:8000')
 MCP_TOOLS_CACHE_TTL = 300  # Cache tools list for 5 minutes

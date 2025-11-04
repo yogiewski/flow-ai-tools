@@ -4,3 +4,4 @@ markdown
 pydantic
 requests
 python-frontmatter
+mcp
