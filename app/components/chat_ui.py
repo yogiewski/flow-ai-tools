@@ -2,7 +2,7 @@ import streamlit as st
 import json
 from typing import List, Dict, Any, Optional
 from services.orchestrator import ChatOrchestrator
-from services.mcp_client import MCPClient
+from services.mcp_client import MCPHTTPClient
 from utils.translator import translator
 
 class ChatUI:
@@ -10,7 +10,7 @@ class ChatUI:
 
     def __init__(self):
         self.orchestrator = ChatOrchestrator()
-        self.mcp_client = MCPClient()
+        self.mcp_client = MCPHTTPClient()
 
     def render_chat(self, messages: List[Dict[str, Any]], tools: Optional[List[Dict[str, Any]]] = None):
         """Render the chat interface with tool support."""

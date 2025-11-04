@@ -1,7 +1,7 @@
 from typing import List, Dict, Any, Optional
 import json
 from services.llm_factory import get_llm_client
-from .mcp_client import MCPClient
+from .mcp_client import MCPHTTPClient
 from utils.logging import get_logger
 from utils.config import get_config
 
@@ -12,7 +12,7 @@ class ChatOrchestrator:
 
     def __init__(self):
         self.config = get_config()
-        self.mcp_client = MCPClient()
+        self.mcp_client = MCPHTTPClient()
         self.max_tool_chain = 3  # Prevent infinite loops
 
     def chat_with_tools(self, messages: List[Dict[str, Any]], tools: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
@@ -87,6 +87,10 @@ class ChatOrchestrator:
 
     def _first_completion(self, messages: List[Dict[str, Any]], tools: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
         """First completion that allows tool usage."""
+        # Get available tools if not provided
+        if tools is None:
+            tools = self.mcp_client.list_tools()
+
         client = get_llm_client(
             self.config['llm_api_flavor'],
             self.config['llm_base_url'],
@@ -143,6 +147,27 @@ class ChatOrchestrator:
                     "success": False
                 })
         return results
+
+    def _second_completion(self, messages: List[Dict[str, Any]], tools: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
+        """Second completion for formatting with tool_choice='none'."""
+        # Get available tools if not provided
+        if tools is None:
+            tools = self.mcp_client.list_tools()
+
+        client = get_llm_client(
+            self.config['llm_api_flavor'],
+            self.config['llm_base_url'],
+            self.config['llm_port']
+        )
+
+        return client.chat_with_tools(
+            messages=messages,
+            model=self.config['llm_default_model'],
+            temperature=0.7,
+            max_tokens=2048,
+            tools=tools,
+            tool_choice="none"
+        )
 
     def _should_continue_chain(self, tool_results: List[Dict[str, Any]]) -> bool:
         """Determine if tool chain should continue based on results."""

@@ -1,37 +1,109 @@
 import requests
 import json
-from typing import Dict, Any, Optional
+from typing import Dict, Any, List
 from utils.logging import get_logger
-from utils.config import get_config
+from config.constants import MCP_SERVER_URL
 
 logger = get_logger(__name__)
 
-class MCPClient:
-    """Client for communicating with MCP server to execute tools."""
+class MCPHTTPClient:
+    """HTTP client for communicating with MCP server using MCP protocol."""
 
-    def __init__(self):
-        self.config = get_config()
-        # MCP server endpoint - could be configured
-        self.mcp_base_url = self.config.get('mcp_base_url', 'http://localhost:8000')
+    def __init__(self, base_url: str = MCP_SERVER_URL):
+        self.base_url = base_url
+
+    def list_tools(self) -> List[Dict[str, Any]]:
+        """Get available tools from MCP server"""
+        try:
+            response = requests.get(f"{self.base_url}/tools", timeout=10)
+            response.raise_for_status()
+            data = response.json()
+            # Assume the server returns tools directly or wrapped
+            return data if isinstance(data, list) else data.get("tools", [])
+        except Exception as e:
+            logger.warning(f"Failed to fetch tools from MCP server: {e}. Using mock tools.")
+            # Fallback to mock tools
+            return [
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "get_product_details",
+                        "description": "Get detailed information about a product",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "query": {"type": "string", "description": "Product name or identifier to search for"}
+                            },
+                            "required": ["query"]
+                        }
+                    }
+                },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "send_expedite_email",
+                        "description": "Send expedite request email to supplier",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "supplier_email": {"type": "string"},
+                                "po_number": {"type": "string"},
+                                "items": {"type": "array"},
+                                "expected_ship_date": {"type": "string"},
+                                "requester_name": {"type": "string"},
+                                "requester_email": {"type": "string"}
+                            },
+                            "required": ["supplier_email", "po_number", "requester_name", "requester_email"]
+                        }
+                    }
+                },
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "check_order_status",
+                        "description": "Check the status of an order",
+                        "parameters": {
+                            "type": "object",
+                            "properties": {
+                                "po_number": {"type": "string"}
+                            },
+                            "required": ["po_number"]
+                        }
+                    }
+                }
+            ]
 
     def call_tool(self, tool_name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Call an MCP tool and return the result.
-
-        Args:
-            tool_name: Name of the tool to call
-            arguments: Tool arguments
-
-        Returns:
-            Tool execution result
-        """
+        """Execute a tool via HTTP"""
         try:
-            # For now, simulate MCP server calls
-            # In production, this would make HTTP requests to MCP server
             logger.info(f"Calling MCP tool: {tool_name} with args: {arguments}")
+            request = {
+                "method": "tools/call",
+                "params": {
+                    "name": tool_name,
+                    "arguments": arguments
+                }
+            }
 
-            # Simulate different tools
-            if tool_name == "send_expedite_email":
+            response = requests.post(
+                f"{self.base_url}/tools/call",
+                json=request,
+                headers={"Content-Type": "application/json"},
+                timeout=30
+            )
+            response.raise_for_status()
+
+            result = response.json()
+            # Extract the actual tool result from MCP response
+            if result.get("content") and len(result["content"]) > 0:
+                return json.loads(result["content"][0]["text"])
+            return {}
+        except Exception as e:
+            logger.error(f"MCP tool call failed: {e}")
+            # Fallback to mock if server fails
+            if tool_name == "get_product_details":
+                return self._mock_get_product_details(arguments)
+            elif tool_name == "send_expedite_email":
                 return self._mock_expedite_email(arguments)
             elif tool_name == "check_order_status":
                 return self._mock_order_status(arguments)
@@ -39,55 +111,8 @@ class MCPClient:
                 return {
                     "status": "error",
                     "result_type": tool_name,
-                    "message": f"Unknown tool: {tool_name}"
+                    "message": str(e)
                 }
-
-        except Exception as e:
-            logger.error(f"MCP tool call failed: {e}")
-            return {
-                "status": "error",
-                "result_type": tool_name,
-                "message": str(e)
-            }
-
-    def get_available_tools(self) -> list:
-        """Get list of available MCP tools."""
-        # In production, this would query MCP server for available tools
-        return [
-            {
-                "type": "function",
-                "function": {
-                    "name": "send_expedite_email",
-                    "description": "Send expedite request email to supplier",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "supplier_email": {"type": "string"},
-                            "po_number": {"type": "string"},
-                            "items": {"type": "array"},
-                            "expected_ship_date": {"type": "string"},
-                            "requester_name": {"type": "string"},
-                            "requester_email": {"type": "string"}
-                        },
-                        "required": ["supplier_email", "po_number", "requester_name", "requester_email"]
-                    }
-                }
-            },
-            {
-                "type": "function",
-                "function": {
-                    "name": "check_order_status",
-                    "description": "Check the status of an order",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "po_number": {"type": "string"}
-                        },
-                        "required": ["po_number"]
-                    }
-                }
-            }
-        ]
 
     def _mock_expedite_email(self, args: Dict[str, Any]) -> Dict[str, Any]:
         """Mock expedite email tool."""
@@ -109,6 +134,58 @@ class MCPClient:
                 "body": f"Dear Supplier,\n\nWe kindly request expediting the shipment for PO {args.get('po_number')}.\nRequested ship date: {args.get('expected_ship_date', 'ASAP')}.\n\nLine items:\n" + "\n".join([f"- {item.get('name', 'Unknown')} x{item.get('quantity', 1)}" for item in args.get('items', [])])
             },
             "result_summary": f"Expedite request queued for PO {args.get('po_number', 'Unknown')}",
+            "meta": {"version": "1.0.0", "locale": "en"}
+        }
+
+    def _mock_get_product_details(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """Mock product details tool."""
+        query = args.get("query", "").lower()
+
+        # Mock product database
+        products = {
+            "switch": {
+                "name": "Network Switch",
+                "sku": "SW-1000",
+                "description": "24-port Gigabit Ethernet switch",
+                "price": 299.99,
+                "stock": 15,
+                "category": "Networking"
+            },
+            "router": {
+                "name": "Wireless Router",
+                "sku": "RT-2000",
+                "description": "Dual-band WiFi 6 router",
+                "price": 149.99,
+                "stock": 8,
+                "category": "Networking"
+            },
+            "cable": {
+                "name": "Ethernet Cable",
+                "sku": "CB-500",
+                "description": "Cat6 Ethernet cable, 10ft",
+                "price": 12.99,
+                "stock": 50,
+                "category": "Cabling"
+            }
+        }
+
+        # Find matching product
+        for key, product in products.items():
+            if key in query or query in product["name"].lower():
+                return {
+                    "status": "success",
+                    "result_type": "product_details",
+                    "data": product,
+                    "result_summary": f"Found product: {product['name']} (SKU: {product['sku']})",
+                    "meta": {"version": "1.0.0", "locale": "en"}
+                }
+
+        # No match found
+        return {
+            "status": "not_found",
+            "result_type": "product_details",
+            "data": {"query": query},
+            "result_summary": f"No product found matching: {query}",
             "meta": {"version": "1.0.0", "locale": "en"}
         }
 

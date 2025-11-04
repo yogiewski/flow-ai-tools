@@ -7,27 +7,37 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app'))
 
 from services.orchestrator import ChatOrchestrator
-from services.mcp_client import MCPClient
+from services.mcp_client import MCPHTTPClient
 
 def test_mcp_client():
     """Test MCP client functionality."""
     print("Testing MCP client...")
-    client = MCPClient()
+    client = MCPHTTPClient()
 
     # Test getting tools
-    tools = client.get_available_tools()
+    tools = client.list_tools()
     print(f"Available tools: {len(tools)}")
     for tool in tools:
         print(f"  - {tool['function']['name']}: {tool['function']['description']}")
 
-    # Test calling a tool
-    result = client.call_tool("send_expedite_email", {
+    # Test calling different tools
+    result1 = client.call_tool("send_expedite_email", {
         "supplier_email": "test@example.com",
         "po_number": "TEST-123",
         "requester_name": "Test User",
         "requester_email": "user@example.com"
     })
-    print(f"Tool result: {result}")
+    print(f"Expedite email result: {result1}")
+
+    result2 = client.call_tool("get_product_details", {
+        "query": "switch"
+    })
+    print(f"Product details result: {result2}")
+
+    result3 = client.call_tool("check_order_status", {
+        "po_number": "PO-456"
+    })
+    print(f"Order status result: {result3}")
 
 def test_orchestrator():
     """Test orchestrator functionality."""

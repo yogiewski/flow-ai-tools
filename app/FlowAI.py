@@ -74,10 +74,10 @@ def send_message():
 
     try:
         from components.chat_ui import ChatUI
-        from services.mcp_client import MCPClient
+        from services.mcp_client import MCPHTTPClient
 
         chat_ui = ChatUI()
-        mcp_client = MCPClient()
+        mcp_client = MCPHTTPClient()
 
         # Prepare messages with prompt if selected
         messages_to_send = st.session_state.messages.copy()
@@ -92,7 +92,7 @@ def send_message():
                 messages_to_send.insert(0, system_message)
 
         # Get available tools
-        tools = mcp_client.get_available_tools()
+        tools = mcp_client.list_tools()
 
         # Get user input from the most recent message
         user_input = ""
@@ -207,11 +207,11 @@ chat_container = st.container()
 with chat_container:
     try:
         from components.chat_ui import ChatUI
-        from services.mcp_client import MCPClient
+        from services.mcp_client import MCPHTTPClient
 
         chat_ui = ChatUI()
-        mcp_client = MCPClient()
-        tools = mcp_client.get_available_tools()
+        mcp_client = MCPHTTPClient()
+        tools = mcp_client.list_tools()
 
         # Filter out system messages for display
         display_messages = [msg for msg in st.session_state.messages if msg["role"] != "system"]
